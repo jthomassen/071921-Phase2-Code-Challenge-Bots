@@ -6,7 +6,6 @@ const API = 'http://localhost:8002/bots'
 
 function BotsPage() {
   const [bots, setBots] = useState([])
-  const [isRendered, setRendered] = useState(true)
 
   useEffect(() => {
     fetch(API) 
@@ -14,7 +13,7 @@ function BotsPage() {
       .then(setBots)
   }, [] )
 
-  function handleRenderBot(id) {
+  function enlistBot(id) {
     setBots(
       bots.map((bot) => 
         bot.id === id ? {...bot, rendered: true} : bot 
@@ -23,15 +22,21 @@ function BotsPage() {
   }
 
   function removeBot(id) {
-    console.log("removeBot Triggered")
+    setBots(
+      bots.map((bot) => 
+        bot.id === id ? {...bot, rendered: false} : bot 
+      )
+    )
+  }
+
+  function dischargeBot(id) {
     setBots(bots.filter((bot) => bot.id !== id))
   }
 
-
   return (
     <div>
-      <YourBotArmy removeBot={removeBot} bots={bots.filter(bot => bot.rendered)} handleRenderBot={handleRenderBot}/>
-      <BotCollection removeBot={removeBot} bots={bots} handleRenderBot={handleRenderBot}/>
+      <YourBotArmy bots={bots.filter(bot => bot.rendered)} handleClick={removeBot} dischargeBot={dischargeBot}/>
+      <BotCollection bots={bots} handleClick={enlistBot} dischargeBot={dischargeBot}/>
     </div>
   )
 }
